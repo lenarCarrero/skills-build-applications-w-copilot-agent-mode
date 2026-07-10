@@ -8,7 +8,7 @@ function Users() {
   useEffect(() => {
     let isMounted = true;
 
-    fetchCollection('/users')
+    fetchCollection('/api/users/')
       .then((data) => {
         if (isMounted) {
           setUsers(data);

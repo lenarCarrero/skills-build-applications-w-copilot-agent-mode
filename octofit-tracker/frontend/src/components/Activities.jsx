@@ -8,7 +8,7 @@ function Activities() {
   useEffect(() => {
     let isMounted = true;
 
-    fetchCollection('/activities')
+    fetchCollection('/api/activities/')
       .then((data) => {
         if (isMounted) {
           setActivities(data);

@@ -8,7 +8,7 @@ function Workouts() {
   useEffect(() => {
     let isMounted = true;
 
-    fetchCollection('/workouts')
+    fetchCollection('/api/workouts/')
       .then((data) => {
         if (isMounted) {
           setWorkouts(data);

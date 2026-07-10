@@ -8,7 +8,7 @@ function Leaderboard() {
   useEffect(() => {
     let isMounted = true;
 
-    fetchCollection('/leaderboard')
+    fetchCollection('/api/leaderboard/')
       .then((data) => {
         if (isMounted) {
           setEntries(data);

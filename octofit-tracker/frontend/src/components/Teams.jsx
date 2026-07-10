@@ -8,7 +8,7 @@ function Teams() {
   useEffect(() => {
     let isMounted = true;
 
-    fetchCollection('/teams')
+    fetchCollection('/api/teams/')
       .then((data) => {
         if (isMounted) {
           setTeams(data);
