@@ -7,8 +7,12 @@ function Users() {
 
   useEffect(() => {
     let isMounted = true;
+    const codespaceEndpoint = `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/users/`;
+    const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+      ? codespaceEndpoint
+      : '/api/users/';
 
-    fetchCollection('/api/users/')
+    fetchCollection(apiEndpoint)
       .then((data) => {
         if (isMounted) {
           setUsers(data);

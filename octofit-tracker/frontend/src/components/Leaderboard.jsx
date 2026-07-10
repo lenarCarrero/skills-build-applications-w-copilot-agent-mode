@@ -7,8 +7,12 @@ function Leaderboard() {
 
   useEffect(() => {
     let isMounted = true;
+    const codespaceEndpoint = `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/leaderboard/`;
+    const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+      ? codespaceEndpoint
+      : '/api/leaderboard/';
 
-    fetchCollection('/api/leaderboard/')
+    fetchCollection(apiEndpoint)
       .then((data) => {
         if (isMounted) {
           setEntries(data);

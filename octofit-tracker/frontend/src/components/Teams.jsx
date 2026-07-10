@@ -7,8 +7,12 @@ function Teams() {
 
   useEffect(() => {
     let isMounted = true;
+    const codespaceEndpoint = `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/teams/`;
+    const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+      ? codespaceEndpoint
+      : '/api/teams/';
 
-    fetchCollection('/api/teams/')
+    fetchCollection(apiEndpoint)
       .then((data) => {
         if (isMounted) {
           setTeams(data);

@@ -7,8 +7,12 @@ function Workouts() {
 
   useEffect(() => {
     let isMounted = true;
+    const codespaceEndpoint = `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts/`;
+    const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+      ? codespaceEndpoint
+      : '/api/workouts/';
 
-    fetchCollection('/api/workouts/')
+    fetchCollection(apiEndpoint)
       .then((data) => {
         if (isMounted) {
           setWorkouts(data);

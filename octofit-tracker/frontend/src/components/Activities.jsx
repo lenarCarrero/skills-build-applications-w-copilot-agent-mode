@@ -7,8 +7,12 @@ function Activities() {
 
   useEffect(() => {
     let isMounted = true;
+    const codespaceEndpoint = `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/activities/`;
+    const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+      ? codespaceEndpoint
+      : '/api/activities/';
 
-    fetchCollection('/api/activities/')
+    fetchCollection(apiEndpoint)
       .then((data) => {
         if (isMounted) {
           setActivities(data);
