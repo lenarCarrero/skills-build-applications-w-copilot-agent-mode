@@ -1,7 +1,7 @@
 const DEFAULT_API_BASE = 'http://localhost:8000/api';
 
 export function getApiBaseUrl() {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+  const codespaceName = import.meta.env?.VITE_CODESPACE_NAME?.trim();
 
   if (codespaceName) {
     return `https://${codespaceName}-8000.app.github.dev/api`;
@@ -10,21 +10,7 @@ export function getApiBaseUrl() {
   return DEFAULT_API_BASE;
 }
 
-export async function fetchCollection(endpoint) {
-  const baseUrl = getApiBaseUrl();
-  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const response = await fetch(`${baseUrl}${normalizedEndpoint}`, {
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to load ${normalizedEndpoint}: ${response.status}`);
-  }
-
-  const payload = await response.json();
-
+function normalizePayload(payload) {
   if (Array.isArray(payload)) {
     return payload;
   }
@@ -46,4 +32,45 @@ export async function fetchCollection(endpoint) {
   }
 
   return payload ? [payload] : [];
+}
+
+async function readJsonFromUrl(url) {
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to load ${url}: ${response.status}`);
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Unexpected response from ${url}`);
+  }
+
+  return response.json();
+}
+
+export async function fetchCollection(endpoint) {
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const candidates = [getApiBaseUrl()];
+
+  if (candidates[0] !== DEFAULT_API_BASE) {
+    candidates.push(DEFAULT_API_BASE);
+  }
+
+  let lastError = null;
+
+  for (const baseUrl of candidates) {
+    try {
+      const payload = await readJsonFromUrl(`${baseUrl}${normalizedEndpoint}`);
+      return normalizePayload(payload);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error(`Failed to load ${normalizedEndpoint}`);
 }
